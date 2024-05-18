@@ -101,9 +101,65 @@ func newTask(title string) *models.Task {
 		Title: title,
 	}
 }
+
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Printf("usage: %s <add|list>\n", os.Args[0])
+		os.Exit(1)
+	}
 
+	client := mustConnectDb()
+	taskStore := db.NewGormTaskStore(client)
 
+	command := os.Args[1]
 
+	switch command {
+	case "add":
+		// need to combine all strings from 2 to infinity using
+		title := strings.Join(os.Args[2:], " ")
+		if len(title) < 4 {
+			log.Fatal("the task should be 4 characters at least")
+		}
+		taskToAdd := newTask(title)
+		mustCreateTask(taskToAdd, taskStore)
+		fmt.Println("task added successfuly.")
+	case "list":
+		tasks := mustGetTodaysTasks(taskStore)
+		listBetter(tasks)
+	case "done":
+		if len(os.Args) != 3 {
+			fmt.Printf("usage: %s done <id>\n", os.Args[0])
+			os.Exit(1)
+		}
+		taskID := os.Args[2]
+		id, err := strconv.ParseInt(taskID, 10, 64)
+		if err != nil {
+			fmt.Printf("usage: %s done <id>\n", os.Args[0])
+			os.Exit(1)
+		}
+		if err := taskStore.MarkDoneTask(context.TODO(), id); err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("task %d successfuly done.\n", id)
+	case "undone":
+		if len(os.Args) != 3 {
+			fmt.Printf("usage: %s undone <id>\n", os.Args[0])
+			os.Exit(1)
+		}
+		taskID := os.Args[2]
+		id, err := strconv.ParseInt(taskID, 10, 64)
+		if err != nil {
+			fmt.Printf("usage: %s undone <id>\n", os.Args[0])
+			os.Exit(1)
+		}
+		if err := taskStore.MarkUnDoneTask(context.TODO(), id); err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("task %d undone.\n", id)
+	default:
+		fmt.Printf("usage: %s <add|list>\n", os.Args[0])
+		os.Exit(1)
+
+	}
 
 }
