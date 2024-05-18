@@ -119,7 +119,7 @@ func newTask(title string) *models.Task {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Printf("usage: %s <add|list>\n", os.Args[0])
+		fmt.Printf("usage: %s <add|list|prio>\n", os.Args[0])
 		os.Exit(1)
 	}
 
@@ -171,8 +171,25 @@ func main() {
 			fmt.Println(err)
 		}
 		fmt.Printf("task %d undone.\n", id)
+	case "prio":
+		if len(os.Args[2:]) != 2 {
+			fmt.Printf("usage: %s <add|list|prio>\n", os.Args[0])
+			os.Exit(1)
+		}
+		// if that works correctly we'll have 2 arguments
+		id, err := strconv.ParseInt(os.Args[2], 10, 64)
+		if err != nil {
+			fmt.Println("the id you have given is incorrect")
+			os.Exit(1)
+		}
+		priority := strings.ToUpper(os.Args[3])
+		err = taskStore.SetPriority(context.TODO(), id, priority)
+		if err != nil {
+			fmt.Println(err.Error())
+			os.Exit(1)
+		}
 	default:
-		fmt.Printf("usage: %s <add|list>\n", os.Args[0])
+		fmt.Printf("usage: %s <add|list|prio>\n", os.Args[0])
 		os.Exit(1)
 
 	}
