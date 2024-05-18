@@ -22,6 +22,7 @@ const (
 	Orange = "\033[38;5;208m" // ANSI 256-color code for orange
 	Green  = "\033[32m"
 )
+
 func listBetter(tasks []*models.Task) {
 	// Print header
 	fmt.Printf("%-5s  %-30s  %-3s\n", "ID", "Title", "Done")
