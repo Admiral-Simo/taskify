@@ -1,5 +1,19 @@
 package main
 
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+
+	"github.com/Admiral-Simo/task/db"
+	"github.com/Admiral-Simo/task/models"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+)
+
 // ANSI color codes
 const (
 	Reset  = "\033[0m"
