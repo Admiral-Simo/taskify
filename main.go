@@ -10,7 +10,6 @@ import (
 
 	"github.com/Admiral-Simo/task/db"
 	"github.com/Admiral-Simo/task/models"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
