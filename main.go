@@ -10,6 +10,7 @@ import (
 
 	"github.com/Admiral-Simo/task/db"
 	"github.com/Admiral-Simo/task/models"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -100,7 +101,8 @@ func mustCreateTask(task *models.Task, client db.TaskStore) {
 }
 
 func mustConnectDb() *gorm.DB {
-	client, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+	dbPath := os.Getenv("DB_PATH")
+	client, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -121,6 +123,10 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Printf("usage: %s <add|list|prio|stats>\n", os.Args[0])
 		os.Exit(1)
+	}
+
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
 	}
 
 	client := mustConnectDb()
@@ -193,5 +199,4 @@ func main() {
 		os.Exit(1)
 
 	}
-
 }
