@@ -15,6 +15,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// database path
+const dbPath = "/Users/me/.bin/gorm.db"
+
 // ANSI color codes
 const (
 	Reset  = "\033[0m"
@@ -101,7 +104,6 @@ func mustCreateTask(task *models.Task, client db.TaskStore) {
 }
 
 func mustConnectDb() *gorm.DB {
-	dbPath := os.Getenv("DB_PATH")
 	client, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
@@ -123,10 +125,6 @@ func main() {
 	if len(os.Args) < 2 {
 		fmt.Printf("usage: %s <add|list|prio|stats>\n", os.Args[0])
 		os.Exit(1)
-	}
-
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
 	}
 
 	client := mustConnectDb()
